@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestione Turni Dipendenti</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h2>TurniApp</h2>
+        <button id="mobile-menu-toggle" class="mobile-only">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+      <nav class="sidebar-nav">
+        <ul>
+          <li class="nav-item active" data-page="employees">
+            <a href="#"><i class="fas fa-users"></i> Dipendenti</a>
+          </li>
+          <li class="nav-item" data-page="calendar">
+            <a href="#"><i class="fas fa-calendar-alt"></i> Calendario Turni</a>
+          </li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Employees Page -->
+      <section id="employees-page" class="page active">
+        <div class="page-header">
+          <h1>Gestione Dipendenti</h1>
+          <button id="add-employee-btn" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Nuovo Dipendente
+          </button>
+        </div>
+
+        <div class="employee-grid" id="employee-list">
+          <!-- Employee cards will be added here via JavaScript -->
+        </div>
+      </section>
+
+      <!-- Calendar Page -->
+      <section id="calendar-page" class="page">
+        <div class="page-header">
+          <h1>Calendario Turni</h1>
+          <div class="calendar-controls">
+            <button id="prev-week" class="btn btn-outline">
+              <i class="fas fa-chevron-left"></i>
+            </button>
+            <h2 id="week-display">Settimana 12-18 Aprile 2025</h2>
+            <button id="next-week" class="btn btn-outline">
+              <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="shift-calendar">
+          <table id="shift-table">
+            <thead>
+              <tr>
+                <th>Giorno</th>
+                <th>Mattina</th>
+                <th>Pomeriggio</th>
+                <th>Notte</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Shift rows will be added here via JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Modals -->
+  <div class="modal" id="employee-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="employee-modal-title">Nuovo Dipendente</h3>
+        <button class="close-modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="employee-form">
+          <input type="hidden" id="employee-id">
+          <div class="form-group">
+            <label for="employee-name">Nome</label>
+            <input type="text" id="employee-name" required>
+          </div>
+          <div class="form-group">
+            <label for="employee-position">Posizione</label>
+            <input type="text" id="employee-position" required>
+          </div>
+          <div class="form-group">
+            <label for="employee-phone">Telefono</label>
+            <input type="text" id="employee-phone" required>
+          </div>
+          <div class="form-group">
+            <label for="employee-email">Email</label>
+            <input type="email" id="employee-email" required>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary close-modal">Annulla</button>
+        <button class="btn btn-primary" id="save-employee">Salva</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="shift-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="shift-modal-title">Assegna Turno</h3>
+        <button class="close-modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p id="shift-day-display"></p>
+        <p id="shift-type-display"></p>
+        <form id="shift-form">
+          <input type="hidden" id="shift-id">
+          <input type="hidden" id="shift-day">
+          <input type="hidden" id="shift-type">
+          <div class="form-group">
+            <label for="shift-employee">Seleziona Dipendente</label>
+            <select id="shift-employee" required>
+              <option value="">Seleziona un dipendente</option>
+              <!-- Options will be populated by JavaScript -->
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary close-modal">Annulla</button>
+        <button class="btn btn-primary" id="save-shift">Salva</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="payment-modal">
+    <div class="modal-content modal-large">
+      <div class="modal-header">
+        <h3 id="payment-modal-title">Pagamenti Mensili</h3>
+        <button class="close-modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="payment-container">
+          <div class="month-selector">
+            <h4>Seleziona mese</h4>
+            <div class="month-picker">
+              <select id="payment-month">
+                <option value="1">Gennaio</option>
+                <option value="2">Febbraio</option>
+                <option value="3">Marzo</option>
+                <option value="4">Aprile</option>
+                <option value="5">Maggio</option>
+                <option value="6">Giugno</option>
+                <option value="7">Luglio</option>
+                <option value="8">Agosto</option>
+                <option value="9">Settembre</option>
+                <option value="10">Ottobre</option>
+                <option value="11">Novembre</option>
+                <option value="12">Dicembre</option>
+              </select>
+              <select id="payment-year">
+                <option value="2025">2025</option>
+                <option value="2024">2024</option>
+              </select>
+            </div>
+          </div>
+          <div class="payment-summary">
+            <h4>Riepilogo <span id="payment-period">Aprile 2025</span></h4>
+            <div id="payment-loading" class="loading-placeholder">
+              <div class="loading-line"></div>
+              <div class="loading-line"></div>
+              <div class="loading-line"></div>
+            </div>
+            <div id="payment-empty" class="payment-empty hidden">
+              Nessun turno trovato per questo mese
+            </div>
+            <div id="payment-data" class="payment-data hidden">
+              <div class="payment-item">
+                <div class="payment-label">
+                  <span class="color-dot morning"></span>
+                  Mattina (<span id="count-morning">0</span>)
+                </div>
+                <div class="payment-value" id="pay-morning">€0</div>
+              </div>
+              <div class="payment-item">
+                <div class="payment-label">
+                  <span class="color-dot afternoon"></span>
+                  Pomeriggio (<span id="count-afternoon">0</span>)
+                </div>
+                <div class="payment-value" id="pay-afternoon">€0</div>
+              </div>
+              <div class="payment-item">
+                <div class="payment-label">
+                  <span class="color-dot night"></span>
+                  Notte (<span id="count-night">0</span>)
+                </div>
+                <div class="payment-value" id="pay-night">€0</div>
+              </div>
+              <div class="payment-total">
+                <div class="payment-label">Totale turni (<span id="count-total">0</span>)</div>
+                <div class="payment-value" id="pay-total">€0</div>
+              </div>
+              <div class="payment-rates">
+                <h5>Dettaglio tariffe:</h5>
+                <div class="rate-badges">
+                  <span class="badge">Mattina: €50</span>
+                  <span class="badge">Pomeriggio: €40</span>
+                  <span class="badge">Notte: €70</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary close-modal">Chiudi</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
